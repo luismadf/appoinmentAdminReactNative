@@ -9,9 +9,10 @@ import {
     Alert,
     ScrollView
 } from 'react-native'
+import shortid from 'shortid'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
-const Formulario = () => {
+const Formulario = ({citas, setCitas, setMostrarForm}) => {
     const [paciente, setPaciente] = useState('')
     const [propietario, setPropietario] = useState('')
     const [telefono, setTelefono] = useState('')
@@ -59,7 +60,16 @@ const Formulario = () => {
             sintomas.trim() === ''
         ) {
            showAlert()
+           return
         }
+
+        const cita = {paciente, propietario, telefono, fecha, hora,sintomas}
+        cita.id = shortid.generate();
+        const citasNuevos = [...citas, cita]
+        setCitas(citasNuevos)
+        setMostrarForm(false)
+
+
     }
 
     const showAlert = () => {

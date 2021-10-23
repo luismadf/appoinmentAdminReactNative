@@ -5,7 +5,9 @@ import {
     View,
     FlatList,
     TouchableHighlight,
-    Platform
+    TouchableWithoutFeedback,
+    Keyboard,
+    Platform,
 } from 'react-native'
 import Cita from './components/Cita'
 import Formulario from './components/Formulario'
@@ -39,45 +41,62 @@ const App = () => {
         setMostrarForm(!mostrarForm)
     }
 
+    const cerrarTeclado = () => {
+        Keyboard.dismiss()
+        console.log('aqui...')
+    }
+
     return (
-        <View style={styles.contenedor}>
-            <Text style={styles.titulo}>Administrador de Citas</Text>
+        <>
+            <View style={styles.contenedor}>
+                <Text style={styles.titulo}>Administrador de Citas</Text>
 
-            <TouchableHighlight
-                onPress={() => mostrarFormulario()}
-                style={styles.btnMostrarForm}
-            >
-                <Text style={styles.textMostrarForm}>Crear Nueva Cita</Text>
-            </TouchableHighlight>
+                <TouchableHighlight
+                    onPress={() => mostrarFormulario()}
+                    style={styles.btnMostrarForm}
+                >
+                    <Text style={styles.textMostrarForm}>
+                        {mostrarForm
+                            ? 'Cancelar Nueva Cita'
+                            : 'Crear Nueva Cita'}
+                    </Text>
+                </TouchableHighlight>
+                <View style={styles.contenido}>
+                    {mostrarForm ? (
+                        <>
+                            <Text style={styles.subTitulo}>
+                                Crear Nueva Cita
+                            </Text>
+                            <Formulario
+                                citas={citas}
+                                setCitas={setCitas}
+                                setMostrarForm={setMostrarForm}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Text style={styles.subTitulo}>
+                                {citas.length > 0
+                                    ? 'Administra tus citas'
+                                    : 'No hay citas'}
+                            </Text>
 
-            <View style={styles.contenido}>
-                {mostrarForm ? (<><Text style={styles.subTitulo}>
-                            Crear Nueva Cita
-                        </Text>
-                    <Formulario /></>
-                ) : (
-                    <>
-                        <Text style={styles.subTitulo}>
-                            {citas.length > 0
-                                ? 'Administra tus citas'
-                                : 'No hay citas'}
-                        </Text>
-
-                        <FlatList
-                            style={styles.listado}
-                            data={citas}
-                            renderItem={({ item }) => (
-                                <Cita
-                                    cita={item}
-                                    eliminarPaciente={eliminarPaciente}
-                                />
-                            )}
-                            keyExtractor={(cita) => cita.id}
-                        />
-                    </>
-                )}
+                            <FlatList
+                                style={styles.listado}
+                                data={citas}
+                                renderItem={({ item }) => (
+                                    <Cita
+                                        cita={item}
+                                        eliminarPaciente={eliminarPaciente}
+                                    />
+                                )}
+                                keyExtractor={(cita) => cita.id}
+                            />
+                        </>
+                    )}
+                </View>
             </View>
-        </View>
+        </>
     )
 }
 
